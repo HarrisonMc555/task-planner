@@ -4,7 +4,7 @@ extern crate task_planner_server;
 use self::task_planner_server::*;
 use std::io::stdin;
 
-fn main() {
+fn main() -> Result<(), diesel::result::Error> {
     let connection = establish_connection();
 
     println!("Enter your name");
@@ -18,7 +18,7 @@ fn main() {
     loop {
         stdin().read_line(&mut username_buffer).unwrap();
         let username_try = username_buffer.trim_end();
-        if user_by_username(&connection, username_try).is_none() {
+        if username_available(&connection, username_try)? {
             username = username_try;
             break;
         }
@@ -26,12 +26,7 @@ fn main() {
         username_buffer.clear();
     }
 
-    let user = match create_user(&connection, username, display_name) {
-        Ok(user) => user,
-        Err(e) => {
-            println!("Error adding user: {:?}", e);
-            return;
-        }
-    };
+    let user = create_user(&connection, username, display_name)?;
     println!("Created user with id: {}", user.id);
+    Ok(())
 }

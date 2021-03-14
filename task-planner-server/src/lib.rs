@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 pub mod models;
 pub mod schema;
 
@@ -26,6 +28,20 @@ pub fn user_by_username(conn: &PgConnection, username: &str) -> Option<User> {
         .load::<User>(conn)
         .ok()
         .and_then(|u| u.into_iter().next())
+}
+
+pub fn username_taken(conn: &PgConnection, username: &str) -> Result<bool, diesel::result::Error> {
+    use diesel::dsl::{exists, select};
+    use schema::users::dsl::{username as dsl_username, users};
+    select(exists(users.filter(dsl_username.eq(username)))).get_result(conn)
+}
+
+pub fn username_available(
+    conn: &PgConnection,
+    username: &str,
+) -> Result<bool, diesel::result::Error> {
+    let taken = username_taken(conn, username)?;
+    Ok(!taken)
 }
 
 pub fn create_user<'a>(
