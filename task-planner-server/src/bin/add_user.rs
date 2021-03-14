@@ -14,19 +14,28 @@ fn main() -> Result<(), diesel::result::Error> {
 
     println!("Choose a username");
     let mut username_buffer = String::new();
-    let username;
+    let user;
     loop {
-        stdin().read_line(&mut username_buffer).unwrap();
-        let username_try = username_buffer.trim_end();
-        if username_available(&connection, username_try)? {
-            username = username_try;
-            break;
-        }
-        println!("This username is already taken. Please choose another username.");
         username_buffer.clear();
+        stdin().read_line(&mut username_buffer).unwrap();
+        let username = username_buffer.trim_end();
+
+        match create_user(&connection, username, display_name) {
+            Ok(u) => {
+                user = u;
+                break;
+            }
+
+            Err(diesel::result::Error::DatabaseError(
+                diesel::result::DatabaseErrorKind::UniqueViolation,
+                _,
+            )) => println!("This username is already taken. Please choose another username."),
+
+            Err(e) => return Err(e),
+        }
     }
 
-    let user = create_user(&connection, username, display_name)?;
     println!("Created user with id: {}", user.id);
+
     Ok(())
 }
