@@ -1,0 +1,9 @@
+CREATE TABLE tasks (
+  id SERIAL PRIMARY KEY,
+  user_id SERIAL NOT NULL,
+  title TEXT NOT NULL,
+  description TEXT,
+  due TIMESTAMP WITH TIME ZONE,
+  complete BOOL NOT NULL DEFAULT FALSE,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+)
