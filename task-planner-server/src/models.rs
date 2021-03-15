@@ -1,4 +1,5 @@
-use super::schema::users;
+use super::schema::{tasks, users};
+use chrono::NaiveDateTime;
 
 #[derive(Queryable)]
 pub struct User {
@@ -8,8 +9,28 @@ pub struct User {
 }
 
 #[derive(Insertable)]
-#[table_name="users"]
+#[table_name = "users"]
 pub struct NewUser<'a> {
     pub username: &'a str,
     pub display_name: &'a str,
+}
+
+#[derive(Queryable, Debug)]
+pub struct Task {
+    pub id: i32,
+    pub user_id: i32,
+    pub title: String,
+    pub description: Option<String>,
+    pub due: Option<NaiveDateTime>,
+    pub complete: bool,
+}
+
+#[derive(Insertable, Debug)]
+#[table_name = "tasks"]
+pub struct NewTask<'a> {
+    pub user_id: i32,
+    pub title: &'a str,
+    pub description: Option<&'a str>,
+    pub due: Option<NaiveDateTime>,
+    pub complete: bool,
 }
