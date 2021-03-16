@@ -2,14 +2,13 @@ use crate::models::{NewUser, User};
 use diesel::pg::PgConnection;
 use diesel::prelude::*;
 
-pub fn user_by_username(conn: &PgConnection, username: &str) -> Option<User> {
+pub fn user_by_username(conn: &PgConnection, username: &str) -> QueryResult<Option<User>> {
     use crate::schema::users::dsl::{username as dsl_username, users};
     users
         .limit(1)
         .filter(dsl_username.eq(username))
         .load::<User>(conn)
-        .ok()
-        .and_then(|u| u.into_iter().next())
+        .map(|u| u.into_iter().next())
 }
 
 pub fn username_taken(conn: &PgConnection, username: &str) -> Result<bool, diesel::result::Error> {
