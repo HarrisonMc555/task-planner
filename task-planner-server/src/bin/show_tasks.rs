@@ -1,7 +1,7 @@
 extern crate diesel;
 extern crate task_planner_server;
 
-use self::task_planner_server::*;
+use self::task_planner_server::connection::*;
 use std::env::args;
 
 fn main() {
@@ -13,7 +13,7 @@ fn main() {
         .parse::<i32>()
         .expect("User ID must be  valid integer");
 
-    let results = crate::tasks::all(&connection, user_id).expect("Error loading tasks");
+    let results = task_planner_server::tasks::all(&connection, user_id).expect("Error loading tasks");
 
     println!("Displaying {} tasks", results.len());
     for task in results {

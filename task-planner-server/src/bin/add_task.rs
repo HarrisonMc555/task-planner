@@ -1,7 +1,7 @@
 extern crate diesel;
 extern crate task_planner_server;
 
-use self::task_planner_server::{models::NewTask, tasks::*, users::*, *};
+use self::task_planner_server::{models::NewTask, tasks::*, users::*, connection::*};
 use std::io::stdin;
 
 fn main() -> Result<(), diesel::result::Error> {

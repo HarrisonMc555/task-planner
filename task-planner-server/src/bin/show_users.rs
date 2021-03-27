@@ -2,8 +2,7 @@ extern crate diesel;
 extern crate task_planner_server;
 
 use self::diesel::prelude::*;
-use self::models::*;
-use self::task_planner_server::*;
+use self::task_planner_server::{models::*, connection::*};
 
 fn main() {
     use task_planner_server::schema::users::dsl::*;
@@ -17,8 +16,8 @@ fn main() {
     println!("Displaying {} users", results.len());
     for user in results {
         println!(
-            "Username: '{}', display name: '{}'",
-            user.username, user.display_name
+            "Id: {}, username: '{}', display name: '{}'",
+            user.id, user.username, user.display_name
         );
     }
 }

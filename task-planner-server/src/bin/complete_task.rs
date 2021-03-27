@@ -1,7 +1,7 @@
 extern crate diesel;
 extern crate task_planner_server;
 
-use self::task_planner_server::{tasks::*, users::*, *};
+use self::task_planner_server::{tasks::*, users::*, connection::*};
 use std::io::stdin;
 
 fn main() -> Result<(), diesel::result::Error> {
@@ -30,7 +30,7 @@ fn main() -> Result<(), diesel::result::Error> {
         }
     }
 
-    let tasks = crate::tasks::get_incomplete(&connection, user.id).expect("Error loading tasks");
+    let tasks = task_planner_server::tasks::get_incomplete(&connection, user.id).expect("Error loading tasks");
     if tasks.is_empty() {
         println!("No incomplete tasks");
         return Ok(());
