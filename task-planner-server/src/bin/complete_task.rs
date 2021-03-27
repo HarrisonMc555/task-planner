@@ -1,36 +1,17 @@
 extern crate diesel;
 extern crate task_planner_server;
 
-use self::task_planner_server::{tasks::*, users::*, connection::*};
 use std::io::stdin;
+
+use self::task_planner_server::{connection::*, helper, tasks::*};
 
 fn main() -> Result<(), diesel::result::Error> {
     let connection = establish_connection();
 
-    println!("Enter your username");
-    let mut username_buffer = String::new();
-    let user;
-    loop {
-        username_buffer.clear();
-        stdin().read_line(&mut username_buffer).unwrap();
-        let username = username_buffer.trim_end();
+    let user = helper::get_username_by_username_from_stdin(&connection)?;
 
-        match user_by_username(&connection, username) {
-            Ok(Some(u)) => {
-                user = u;
-                break;
-            }
-
-            Ok(None) => println!(
-                "No user found with username {}. Please try again.",
-                username
-            ),
-
-            Err(e) => return Err(e),
-        }
-    }
-
-    let tasks = task_planner_server::tasks::get_incomplete(&connection, user.id).expect("Error loading tasks");
+    let tasks = task_planner_server::tasks::get_incomplete(&connection, user.id)
+        .expect("Error loading tasks");
     if tasks.is_empty() {
         println!("No incomplete tasks");
         return Ok(());

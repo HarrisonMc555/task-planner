@@ -1,22 +1,24 @@
 extern crate diesel;
 extern crate task_planner_server;
 
-use self::task_planner_server::connection::*;
-use std::env::args;
+use diesel::QueryResult;
 
-fn main() {
+use task_planner_server::helper;
+
+use self::task_planner_server::connection::*;
+
+fn main() -> QueryResult<()> {
     let connection = establish_connection();
 
-    let user_id = args()
-        .nth(1)
-        .expect("User ID argument required")
-        .parse::<i32>()
-        .expect("User ID must be  valid integer");
+    let user = helper::get_username_by_username_from_stdin(&connection)?;
 
-    let results = task_planner_server::tasks::all(&connection, user_id).expect("Error loading tasks");
+    let results =
+        task_planner_server::tasks::all(&connection, user.id).expect("Error loading tasks");
 
     println!("Displaying {} tasks", results.len());
     for task in results {
         println!("{:?}", task);
     }
+
+    Ok(())
 }

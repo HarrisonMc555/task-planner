@@ -2,7 +2,7 @@ extern crate diesel;
 extern crate task_planner_server;
 
 use self::diesel::prelude::*;
-use self::task_planner_server::{models::*, connection::*};
+use self::task_planner_server::{connection::*, models::*};
 
 fn main() {
     use task_planner_server::schema::users::dsl::*;
