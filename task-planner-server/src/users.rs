@@ -41,3 +41,7 @@ pub fn create_user<'a>(
         .values(&new_user)
         .get_result(conn)
 }
+
+pub fn all_users(conn: &PgConnection) -> QueryResult<Vec<User>> {
+    crate::schema::users::dsl::users.load(conn)
+}
