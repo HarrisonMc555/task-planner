@@ -4,15 +4,15 @@ extern crate diesel;
 extern crate rocket;
 extern crate task_planner_server;
 
+use diesel::QueryResult;
 use rocket_contrib::json::Json;
 
-use diesel::QueryResult;
 use task_planner_server::models::User;
 use task_planner_server::{connection, tasks, users};
 
 pub fn main() {
     rocket::ignite()
-        .mount("/", routes![index, get_user_tasks, get_users])
+        .mount("/", routes![index, get_user_tasks, get_users, get_user])
         .launch();
 }
 
@@ -44,4 +44,11 @@ fn get_user_tasks(user_id: i32) -> String {
 fn get_users() -> QueryResult<Json<Vec<User>>> {
     let connection = connection::establish_connection();
     users::all_users(&connection).map(|users| Json(users))
+}
+
+#[get("/user/<username>")]
+fn get_user(username: String) -> QueryResult<Option<Json<User>>> {
+    let connection = connection::establish_connection();
+    users::user_by_username(&connection, &username)
+        .map(|option_user| option_user.map(|user| Json(user)))
 }
