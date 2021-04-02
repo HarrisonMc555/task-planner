@@ -16,7 +16,7 @@ pub struct NewUser<'a> {
     pub display_name: &'a str,
 }
 
-#[derive(Queryable, Debug)]
+#[derive(Queryable, Serialize, Deserialize, Debug)]
 pub struct Task {
     pub id: i32,
     pub user_id: i32,

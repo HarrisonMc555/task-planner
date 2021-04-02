@@ -7,7 +7,7 @@ extern crate task_planner_server;
 use diesel::QueryResult;
 use rocket_contrib::json::Json;
 
-use task_planner_server::models::User;
+use task_planner_server::models::{Task, User};
 use task_planner_server::{connection, tasks, users};
 
 pub fn main() {
@@ -21,23 +21,14 @@ fn index() -> &'static str {
     "Hello, world!"
 }
 
-#[get("/user/<user_id>/tasks")]
-fn get_user_tasks(user_id: i32) -> String {
+#[get("/user/<username>/tasks")]
+fn get_user_tasks(username: String) -> QueryResult<Option<Json<Vec<Task>>>> {
     let connection = connection::establish_connection();
-    let tasks = match tasks::all(&connection, user_id) {
-        Ok(tasks) => tasks,
-        Err(e) => return format!("{:?}", e),
+    let user = match users::user_by_username(&connection, &username)? {
+        Some(user) => user,
+        None => return Ok(None),
     };
-    if tasks.is_empty() {
-        return "No tasks".to_string();
-    }
-    tasks
-        .into_iter()
-        .map(|task| {
-            let checkbox = if task.complete { "X" } else { " " };
-            format!("[{}] {}\n", checkbox, task.title)
-        })
-        .collect()
+    tasks::all(&connection, user.id).map(|tasks| Some(Json(tasks)))
 }
 
 #[get("/users")]
