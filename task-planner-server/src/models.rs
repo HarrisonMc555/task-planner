@@ -1,4 +1,5 @@
 use super::schema::{tasks, users};
+use crate::util::NaiveDateTimeForm;
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 
@@ -33,4 +34,23 @@ pub struct NewTask<'a> {
     pub title: &'a str,
     pub description: Option<&'a str>,
     pub due: Option<NaiveDateTime>,
+}
+
+#[derive(FromForm, Debug)]
+pub struct FormTask {
+    pub user_id: i32,
+    pub title: String,
+    pub description: Option<String>,
+    pub due: Option<NaiveDateTimeForm>,
+}
+
+impl FormTask {
+    pub fn create_new_task(&self) -> NewTask {
+        NewTask {
+            user_id: self.user_id,
+            title: &self.title,
+            description: self.description.as_deref(),
+            due: self.due.as_deref().cloned(),
+        }
+    }
 }
