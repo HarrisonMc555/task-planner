@@ -26,12 +26,11 @@ pub struct Task {
     pub complete: bool,
 }
 
-#[derive(Insertable, Debug)]
+#[derive(Insertable, Serialize, Deserialize, Debug)]
 #[table_name = "tasks"]
 pub struct NewTask<'a> {
     pub user_id: i32,
     pub title: &'a str,
     pub description: Option<&'a str>,
     pub due: Option<NaiveDateTime>,
-    pub complete: bool,
 }

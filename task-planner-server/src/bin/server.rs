@@ -7,12 +7,15 @@ extern crate task_planner_server;
 use diesel::QueryResult;
 use rocket_contrib::json::Json;
 
-use task_planner_server::models::{Task, User};
+use task_planner_server::models::{NewTask, Task, User};
 use task_planner_server::{connection, tasks, users};
 
 pub fn main() {
     rocket::ignite()
-        .mount("/", routes![index, get_user_tasks, get_users, get_user])
+        .mount(
+            "/",
+            routes![index, get_user_tasks, get_users, get_user, create_task],
+        )
         .launch();
 }
 
@@ -42,4 +45,10 @@ fn get_user(username: String) -> QueryResult<Option<Json<User>>> {
     let connection = connection::establish_connection();
     users::user_by_username(&connection, &username)
         .map(|option_user| option_user.map(|user| Json(user)))
+}
+
+#[post("/task/new", data = "<task>")]
+fn create_task(task: Json<NewTask>) -> QueryResult<Json<Task>> {
+    let connection = connection::establish_connection();
+    tasks::create_task(&connection, &task).map(|new_task| Json(new_task))
 }

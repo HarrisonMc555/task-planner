@@ -19,7 +19,6 @@ fn main() -> Result<(), diesel::result::Error> {
         title,
         description: None,
         due: None,
-        complete: false,
     };
 
     match create_task(&connection, &task) {
