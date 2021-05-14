@@ -10,9 +10,13 @@
         You have no tasks!
     {% else %}
         {% for task in tasks %}
+            {% if task.complete %}
+                {% set action_str = "uncomplete" %}
+            {% else %}
+                {% set action_str = "complete" %}
+            {% endif %}
             <input type="checkbox" id="task-{{ task.id }}" disabled {% if task.complete %}checked{% endif %}>
-            <a href="{% if task.complete %}un{% endif %}complete/{{ task.id }}">
-                {% if task.complete %}un{% endif %}complete</a>
+            <a href="{{ action_str }}/{{ task.id }}">{{ action_str }}</a>
             <label for="task-{{ task.id }}">{{ task.title }}</label><br>
         {% endfor %}
     {% endif %}
