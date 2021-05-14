@@ -77,18 +77,17 @@ fn uncomplete_task(username: String, task_id: i32) -> Option<Redirect> {
 #[get("/users")]
 fn get_users() -> QueryResult<Json<Vec<User>>> {
     let connection = connection::establish_connection();
-    users::all_users(&connection).map(|users| Json(users))
+    users::all_users(&connection).map(Json)
 }
 
 #[get("/user/<username>")]
 fn get_user(username: String) -> QueryResult<Option<Json<User>>> {
     let connection = connection::establish_connection();
-    users::user_by_username(&connection, &username)
-        .map(|option_user| option_user.map(|user| Json(user)))
+    users::user_by_username(&connection, &username).map(|option_user| option_user.map(Json))
 }
 
 #[post("/task/new", data = "<task>")]
 fn create_task(task: Json<NewTask>) -> QueryResult<Json<Task>> {
     let connection = connection::establish_connection();
-    tasks::create_task(&connection, &task).map(|new_task| Json(new_task))
+    tasks::create_task(&connection, &task).map(Json)
 }
