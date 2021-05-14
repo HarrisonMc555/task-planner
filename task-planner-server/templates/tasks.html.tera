@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Tasks for {{ user.display_name }}</title>
+</head>
+<body>
+<h1>Tasks for {{ user.display_name }}</h1>
+<ul>
+    {% if tasks | length == 0 %}
+        You have no tasks!
+    {% else %}
+        {% for task in tasks %}
+            <input type="checkbox" id="task-{{ task.id }}" disabled {% if task.complete %}checked{% endif %}>
+            <a href="{% if task.complete %}un{% endif %}complete/{{ task.id }}">
+                {% if task.complete %}un{% endif %}complete</a>
+            <label for="task-{{ task.id }}">{{ task.title }}</label><br>
+        {% endfor %}
+    {% endif %}
+</ul>
+</body>
+</html>
