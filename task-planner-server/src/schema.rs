@@ -19,4 +19,7 @@ table! {
 
 joinable!(tasks -> users (user_id));
 
-allow_tables_to_appear_in_same_query!(tasks, users,);
+allow_tables_to_appear_in_same_query!(
+    tasks,
+    users,
+);
