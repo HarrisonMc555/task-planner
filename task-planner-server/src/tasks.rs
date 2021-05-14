@@ -22,7 +22,7 @@ pub fn complete_task(conn: &PgConnection, id: i32) -> QueryResult<Task> {
     set_task_complete(conn, id, true)
 }
 
-pub fn uncomplete_task(conn: &PgConnection, id: i32) -> QueryResult<Task> {
+pub fn incomplete_task(conn: &PgConnection, id: i32) -> QueryResult<Task> {
     set_task_complete(conn, id, false)
 }
 

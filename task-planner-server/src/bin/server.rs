@@ -23,7 +23,7 @@ pub fn main() {
                 index,
                 get_user_tasks,
                 complete_task,
-                uncomplete_task,
+                incomplete_task,
                 get_users,
                 get_user,
                 create_task
@@ -62,15 +62,15 @@ fn complete_task(username: String, task_id: i32) -> Option<Redirect> {
     Some(Redirect::to(uri!(get_user_tasks: username)))
 }
 
-#[get("/user/<username>/uncomplete/<task_id>")]
-fn uncomplete_task(username: String, task_id: i32) -> Option<Redirect> {
+#[get("/user/<username>/incomplete/<task_id>")]
+fn incomplete_task(username: String, task_id: i32) -> Option<Redirect> {
     let connection = connection::establish_connection();
     let user = users::user_by_username(&connection, &username).ok()??;
     let task = tasks::get(&connection, task_id).ok()?;
     if task.user_id != user.id {
         return None;
     }
-    tasks::uncomplete_task(&connection, task_id).ok()?;
+    tasks::incomplete_task(&connection, task_id).ok()?;
     Some(Redirect::to(uri!(get_user_tasks: username)))
 }
 

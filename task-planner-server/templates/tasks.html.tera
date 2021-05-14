@@ -11,12 +11,14 @@
     {% else %}
         {% for task in tasks %}
             {% if task.complete %}
-                {% set action_str = "uncomplete" %}
+                {% set action_str = "incomplete" %}
+                {% set url = "incomplete" %}
             {% else %}
                 {% set action_str = "complete" %}
+                {% set url = "complete" %}
             {% endif %}
             <input type="checkbox" id="task-{{ task.id }}" disabled {% if task.complete %}checked{% endif %}>
-            <a href="{{ action_str }}/{{ task.id }}">{{ action_str }}</a>
+            <a href="{{ url }}/{{ task.id }}">{{ action_str }}</a>
             <label for="task-{{ task.id }}">{{ task.title }}</label><br>
         {% endfor %}
     {% endif %}
