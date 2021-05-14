@@ -6,7 +6,7 @@
 <body>
 <h1>Tasks for {{ user.display_name }}</h1>
 <ul>
-    {% if tasks | length == 0 %}
+    {% if not tasks %}
         You have no tasks!
     {% else %}
         {% for task in tasks %}
