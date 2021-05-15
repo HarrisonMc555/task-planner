@@ -13,7 +13,7 @@ fn main() -> QueryResult<()> {
     let user = helper::get_username_by_username_from_stdin(&connection)?;
 
     let results =
-        task_planner_server::tasks::all(&connection, user.id).expect("Error loading tasks");
+        task_planner_server::tasks::for_user(&connection, user.id).expect("Error loading tasks");
 
     println!("Displaying {} tasks", results.len());
     for task in results {

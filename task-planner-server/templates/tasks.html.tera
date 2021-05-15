@@ -5,11 +5,13 @@
 </head>
 <body>
 <h1>Tasks for {{ user.display_name }}</h1>
-<ul>
-    {% if not tasks %}
-        You have no tasks!
-    {% else %}
-        {% for task in tasks %}
+{% if not task_plans %}
+    You have no tasks!
+{% else %}
+    <ul>
+        {% for task_plan in task_plans %}
+            {% set task = task_plan.task %}
+            {% set plans = task_plan.plans %}
             {% if task.complete %}
                 {% set action_str = "incomplete" %}
                 {% set url = "incomplete" %}
@@ -17,11 +19,20 @@
                 {% set action_str = "complete" %}
                 {% set url = "complete" %}
             {% endif %}
-            <input type="checkbox" id="task-{{ task.id }}" disabled {% if task.complete %}checked{% endif %}>
-            <a href="{{ url }}/{{ task.id }}">{{ action_str }}</a>
-            <label for="task-{{ task.id }}">{{ task.title }}</label><br>
+            <li>
+                <input type="checkbox" id="task-{{ task.id }}" disabled {% if task.complete %}checked{% endif %}>
+                <a href="{{ url }}/{{ task.id }}">{{ action_str }}</a>
+                <label for="task-{{ task.id }}">{{ task.title }}{% if not plans %} (unplanned){% endif %}</label>
+                {% if plans %}
+                    <ul>
+                        {% for plan in plans %}
+                            <li>{{ plan.title }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </li>
         {% endfor %}
-    {% endif %}
-</ul>
+    </ul>
+{% endif %}
 </body>
 </html>

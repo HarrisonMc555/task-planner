@@ -2,6 +2,12 @@ use crate::models::{NewUser, User};
 use diesel::pg::PgConnection;
 use diesel::prelude::*;
 
+pub fn get(conn: &PgConnection, id: i32) -> QueryResult<User> {
+    crate::schema::users::dsl::users
+        .find(id)
+        .get_result::<User>(conn)
+}
+
 pub fn user_by_username(conn: &PgConnection, username: &str) -> QueryResult<Option<User>> {
     use crate::schema::users::dsl::{username as dsl_username, users};
     users

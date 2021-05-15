@@ -13,7 +13,7 @@ use rocket_contrib::templates::Template;
 use serde_json::json;
 
 use task_planner_server::models::{NewTask, Task, User};
-use task_planner_server::{connection, tasks, users};
+use task_planner_server::{connection, plans, tasks, users};
 
 pub fn main() {
     rocket::ignite()
@@ -42,11 +42,11 @@ fn index() -> Template {
 fn get_user_tasks(username: String) -> Option<Template> {
     let connection = connection::establish_connection();
     let user = users::user_by_username(&connection, &username).ok()??;
-    let mut tasks = tasks::all(&connection, user.id).ok()?;
-    tasks.sort_unstable_by_key(|t| t.id);
+    let mut task_plans = plans::task_plans_for_user(&connection, &user).ok()?;
+    task_plans.sort_unstable_by_key(|tp| tp.task.id);
     let mut context = HashMap::new();
     context.insert("user", json!(user));
-    context.insert("tasks", json!(tasks));
+    context.insert("task_plans", json!(task_plans));
     Some(Template::render("tasks", &context))
 }
 
