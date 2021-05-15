@@ -13,7 +13,7 @@ fn main() {
     let task_id = task_id_buffer.trim_end();
     let task_id = task_id.parse::<i32>().expect("Invalid task ID");
 
-    match task_planner_server::tasks::get(&connection, task_id) {
+    match task_planner_server::tasks::by_id(&connection, task_id) {
         Ok(task) => println!("{:?}", task),
         Err(diesel::result::Error::NotFound) => println!("No task with ID {} found", task_id),
         Err(e) => println!("Internal database error: {:?}", e),

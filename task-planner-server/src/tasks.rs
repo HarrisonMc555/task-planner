@@ -1,6 +1,6 @@
 use diesel::prelude::*;
 
-use crate::models::{NewTask, Task};
+use crate::models::{NewTask, Task, User};
 use crate::schema::tasks::{self, dsl};
 
 pub fn for_user(conn: &PgConnection, user_id: i32) -> QueryResult<Vec<Task>> {
@@ -8,7 +8,7 @@ pub fn for_user(conn: &PgConnection, user_id: i32) -> QueryResult<Vec<Task>> {
     Task::belonging_to(&user).load(conn)
 }
 
-pub fn get(conn: &PgConnection, id: i32) -> QueryResult<Task> {
+pub fn by_id(conn: &PgConnection, id: i32) -> QueryResult<Task> {
     tasks::table.find(id).get_result::<Task>(conn)
 }
 
@@ -32,9 +32,8 @@ pub fn set_task_complete(conn: &PgConnection, id: i32, is_complete: bool) -> Que
         .get_result::<Task>(conn)
 }
 
-pub fn get_incomplete(conn: &PgConnection, user_id: i32) -> QueryResult<Vec<Task>> {
-    dsl::tasks
-        .filter(dsl::user_id.eq(user_id))
+pub fn incomplete_for_user(conn: &PgConnection, user: &User) -> QueryResult<Vec<Task>> {
+    Task::belonging_to(user)
         .filter(dsl::complete.eq(false))
         .load::<Task>(conn)
 }

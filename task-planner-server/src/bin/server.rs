@@ -54,7 +54,7 @@ fn get_user_tasks(username: String) -> Option<Template> {
 fn complete_task(username: String, task_id: i32) -> Option<Redirect> {
     let connection = connection::establish_connection();
     let user = users::user_by_username(&connection, &username).ok()??;
-    let task = tasks::get(&connection, task_id).ok()?;
+    let task = tasks::by_id(&connection, task_id).ok()?;
     if task.user_id != user.id {
         return None;
     }
@@ -66,7 +66,7 @@ fn complete_task(username: String, task_id: i32) -> Option<Redirect> {
 fn incomplete_task(username: String, task_id: i32) -> Option<Redirect> {
     let connection = connection::establish_connection();
     let user = users::user_by_username(&connection, &username).ok()??;
-    let task = tasks::get(&connection, task_id).ok()?;
+    let task = tasks::by_id(&connection, task_id).ok()?;
     if task.user_id != user.id {
         return None;
     }

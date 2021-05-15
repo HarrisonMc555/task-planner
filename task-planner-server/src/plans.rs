@@ -19,12 +19,7 @@ pub fn for_task(conn: &PgConnection, task: &Task) -> QueryResult<Vec<Plan>> {
     Plan::belonging_to(task).load(conn)
 }
 
-pub fn for_task_id(conn: &PgConnection, task_id: i32) -> QueryResult<Vec<Plan>> {
-    let task = tasks_dsl::tasks.find(task_id).get_result::<Task>(conn)?;
-    for_task(conn, &task)
-}
-
-pub fn get(conn: &PgConnection, id: i32) -> QueryResult<Plan> {
+pub fn by_id(conn: &PgConnection, id: i32) -> QueryResult<Plan> {
     plans_dsl::plans.find(id).get_result::<Plan>(conn)
 }
 

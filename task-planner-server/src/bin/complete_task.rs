@@ -10,7 +10,7 @@ fn main() -> Result<(), diesel::result::Error> {
 
     let user = helper::get_username_by_username_from_stdin(&connection)?;
 
-    let tasks = task_planner_server::tasks::get_incomplete(&connection, user.id)
+    let tasks = task_planner_server::tasks::incomplete_for_user(&connection, &user)
         .expect("Error loading tasks");
     if tasks.is_empty() {
         println!("No incomplete tasks");
